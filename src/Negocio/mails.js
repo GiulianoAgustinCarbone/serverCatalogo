@@ -2,10 +2,12 @@ import nodemailer from 'nodemailer';
 import ProductoDAOImp from '../Datos/ProductoDAOImp.js';
 import db from '../Datos/database.js';
 import dotenv from "dotenv"; // esta libreria es la que se encarga de buscar al archivo.env
+import UsuarioDAOImp from '../Datos/UsuarioDAOImp.js';
 
 dotenv.config(); // Para evitar el hardcodeo de las credenciales. Directamente las toma del .env
 
 const productoDAO = new ProductoDAOImp(db);
+const usuarioDAO = new UsuarioDAOImp(db);
 const correoBase = 'catalogowebingenieria@gmail.com'; //Correo creado para enviar y/o recibir los mails del servidor
 
 // Configuramos la conexión con Gmail
@@ -22,6 +24,9 @@ export async function construirMensaje(id, nombreCliente, correoCliente,mensaje,
     try{
         const producto = await productoDAO.read(id);
         if (producto) {
+                const usuarios = await usuarioDAO.getAll();
+                const listaCorreos = usuarios.map(usuario => usuario.email).join(', ');
+
                 const paraQuien = '"Catálogo de Productos" <'+correoEmisor+'>'; //Es el "Para" de los correos
                 const asunto = "Información sobre el producto IDº"+id+" - "+producto.titulo;
                 const mensajeFormateado = mensaje.replace(/\n/g, '<br>'); //Formatear el mensaje para que quede en formato html
@@ -32,7 +37,7 @@ export async function construirMensaje(id, nombreCliente, correoCliente,mensaje,
                     <p><strong>Mensaje:</strong><br><br>${mensajeFormateado}</p>
                     <p><strong>Correo del Cliente:</strong> ${correoCliente}</p>
                 `;
-                await enviarCorreo(paraQuien, asunto, correoBase, mensajeCorreo);
+                await enviarCorreo(paraQuien, asunto, listaCorreos, mensajeCorreo);
         } else {
             throw new Error("Producto no encontrado en la base de datos");
         }
