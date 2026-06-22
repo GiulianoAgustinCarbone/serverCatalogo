@@ -13,6 +13,9 @@ const correoBase = 'catalogowebingenieria@gmail.com'; //Correo creado para envia
 // Configuramos la conexión con Gmail
 const transporter = nodemailer.createTransport({
     service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
     auth: {
         user: correoBase, // Tu correo de Gmail
         pass: process.env.CLAVECORREOBASE // La contraseña de aplicación
