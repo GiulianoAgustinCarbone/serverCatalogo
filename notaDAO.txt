@@ -1,0 +1,15 @@
+Nota:  Qué retornan los DAO? [Modificado: 6/6/26]
+
+Al principio lo implemente para que  controle los errores que tuviera, pero ese es trabajo del
+archivo "Router" (Controller tambien conocido) de cada entidad.
+
+Entonces ahora el archivo Router es el que retornara un objeto estructurado, que puede ser alguno de los siguientes formatos:
+
+1. Caso de EXITO: [La operación se realizo correctamente] (quite el tipo porq no lo usamos)
+	Retornara {exito: true, data: //Puede ser el ID creado, el array de resultados al leer, un mensaje de confirmación, etc}
+
+2. Caso de ERROR LOGICO: [La consulta paso, pero no se afecto la/s fila/s]
+	Retornara { exito: false, mensaje: "..." } [Cuando sea necesario]
+
+3. Caso de ERROR DE BD: [Falla SQL, conexión o clave duplicada]
+	Retornara { exito: false, mensaje: "...", errorLog: error.message }
