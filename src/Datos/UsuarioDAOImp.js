@@ -39,4 +39,13 @@ export default class UsuarioDAOImp extends DAO {
             throw error;
         }
     }
+
+    async getAll(){
+        try {
+            return await this.db.all("SELECT * FROM usuario");
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
 }
